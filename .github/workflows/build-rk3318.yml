@@ -41,8 +41,8 @@ jobs:
             MINIMAL_FLAG="no"
           fi
 
-          # Запуск оригинальной команды через эмулятор терминала `script`
-          script -e -c "./compile.sh BOARD=rk3318-box RELEASE=${{ github.event.inputs.release_os }} BUILD_DESKTOP=no BUILD_MINIMAL=$MINIMAL_FLAG KERNEL_CONFIGURE=no" /dev/null
+          # Добавлен принудительный параметр BRANCH=current
+          script -e -c "./compile.sh BOARD=rk3318-box BRANCH=current RELEASE=${{ github.event.inputs.release_os }} BUILD_DESKTOP=no BUILD_MINIMAL=$MINIMAL_FLAG KERNEL_CONFIGURE=no" /dev/null
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
