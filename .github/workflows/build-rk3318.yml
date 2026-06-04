@@ -35,22 +35,19 @@ jobs:
 
       - name: Run Armbian Build
         run: |
-          # Переводим выбор типа сборки в понятные скрипту параметры
           if [ "${{ github.event.inputs.build_type }}" = "minimal" ]; then
             MINIMAL_FLAG="yes"
           else
             MINIMAL_FLAG="no"
           fi
 
-          ./compile.sh \
-            BOARD=rk3318-box \
-            BRANCH=current \
-            RELEASE=${{ github.event.inputs.release_os }} \
-            BUILD_DESKTOP=no \
-            BUILD_MINIMAL=$MINIMAL_FLAG \
-            docker-build=no \
-            no-git-checkout=yes \
-            kernel-config:no
+          ./compile.sh build \
+            board=rk3318-box \
+            branch=current \
+            release=${{ github.event.inputs.release_os }} \
+            desktop=no \
+            minimal=$MINIMAL_FLAG \
+            cmdline
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
