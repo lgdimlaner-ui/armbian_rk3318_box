@@ -41,13 +41,8 @@ jobs:
             MINIMAL_FLAG="no"
           fi
 
-          ./compile.sh build \
-            board=rk3318-box \
-            branch=current \
-            release=${{ github.event.inputs.release_os }} \
-            desktop=no \
-            minimal=$MINIMAL_FLAG \
-            cmdline
+          # Запуск оригинальной команды через эмулятор терминала `script`
+          script -e -c "./compile.sh BOARD=rk3318-box RELEASE=${{ github.event.inputs.release_os }} BUILD_DESKTOP=no BUILD_MINIMAL=$MINIMAL_FLAG KERNEL_CONFIGURE=no" /dev/null
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
