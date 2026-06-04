@@ -41,7 +41,10 @@ jobs:
             MINIMAL_FLAG="no"
           fi
 
-          # Добавлен принудительный параметр BRANCH=current
+          # Принудительно отключаем Docker-контейнер Armbian
+          export PREFER_DOCKER=no
+
+          # Запуск сборки напрямую на хосте через эмулятор терминала
           script -e -c "./compile.sh BOARD=rk3318-box BRANCH=current RELEASE=${{ github.event.inputs.release_os }} BUILD_DESKTOP=no BUILD_MINIMAL=$MINIMAL_FLAG KERNEL_CONFIGURE=no" /dev/null
 
       - name: Upload Artifacts
