@@ -1,0 +1,58 @@
+name: Build Armbian for RK3318
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_os:
+        description: 'Выберите операционную систему'
+        required: true
+        default: 'resolute'
+        type: choice
+        options:
+          - 'resolute'
+          - 'noble'
+          - 'bookworm'
+      build_type:
+        description: 'Тип серверной сборки'
+        required: true
+        default: 'minimal'
+        type: choice
+        options:
+          - 'minimal'
+          - 'standard'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Build Repository
+        uses: actions/checkout@v4
+
+      - name: Free Disk Space
+        run: |
+          sudo docker image prune --all --force
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+
+      - name: Run Armbian Build
+        run: |
+          # Переводим выбор типа сборки в понятные скрипту параметры
+          if [ "${{ github.event.inputs.build_type }}" = "minimal" ]; then
+            MINIMAL_FLAG="yes"
+          else
+            MINIMAL_FLAG="no"
+          fi
+
+          sudo ./compile.sh \
+            BOARD=rk3318-box \
+            BRANCH=current \
+            RELEASE=${{ github.event.inputs.release_os }} \
+            BUILD_MINIMAL=$MINIMAL_FLAG \
+            BUILD_DESKTOP=no \
+            KERNEL_ONLY=no \
+            KERNEL_CONFIGURE=no
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: armbian-rk3318-${{ github.event.inputs.release_os }}-${{ github.event.inputs.build_type }}
+          path: output/images/*.img.xz
